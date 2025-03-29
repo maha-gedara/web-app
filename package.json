@@ -6,6 +6,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.0.13",
     "axios": "^1.8.4",
+    "axios": "^1.8.4",
     "browserslist": "^4.24.4",
     "caniuse-lite": "^1.0.30001703",
     "electron-to-chromium": "^1.5.115",
@@ -13,6 +14,7 @@
     "fraction.js": "^4.3.7",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
+    "lucide-react": "^0.484.0",
     "nanoid": "^3.3.9",
     "node-releases": "^2.0.19",
     "normalize-range": "^0.1.2",
@@ -22,6 +24,8 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.4.0",
     "react-toastify": "^11.0.5",
+    "react-hot-toast": "^2.5.2",
+    "react-router-dom": "^7.4.0",
     "source-map-js": "^1.2.1",
     "sweetalert2": "^11.17.2",
     "update-browserslist-db": "^1.1.3"
@@ -42,6 +46,6 @@
     "postcss": "^8.5.3",
     "postcss-loader": "^8.1.1",
     "tailwindcss": "^4.0.13",
-    "vite": "^6.2.1"
+    "vite": "^6.2.2"
   }
 }
