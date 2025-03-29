@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -30,12 +29,15 @@ function App() {
     <Router>
  
         <Routes>
-        <Route path="/" element={<PPage />} />
+
+
+          //primal
+        {/*<Route path="/" element={<PPage />} />
         <Route path="/add-patient" element={<AddPatient />} />
         <Route path="/patient-list" element={<PatientList />} />
         <Route path="/patient-edit/:id" element={<PatientUpdate />} />
         <Route path="/ai-prediction" element={<AIPrediction />} />
-        <Route path="/patient-report" element={<PatientReport />} />
+        <Route path="/patient-report" element={<PatientReport />} />*/}
           
 
           //sanduni
