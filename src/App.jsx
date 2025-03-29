@@ -10,7 +10,6 @@ import PatientList from '../src/pages/patient/PatientList';
 import AIPrediction from '../src/pages/patient/AIPrediction';
 import PatientReport from '../src/pages/patient/PatientReport';
 import PatientUpdate from '../src/pages/patient/UpdatePatient';
-import StaffDetails from "./pages/Staff/staffdetails"; 
 
 //lakshitha imports
 import AssignSalary from "./pages/Staff/AssignSalary";
@@ -18,30 +17,21 @@ import SalaryDetails from "./pages/Staff/SalaryDetails";
 import StaffSidebar from "./components/staff/StaffSidebar";
 import AddStaff from "./pages/Staff/addstaff";
 import HomePage from "./pages/Staff/HomePage";
-import './index.css';
-
-
+import StaffDetails from "./pages/Staff/staffdetails"; 
 
 
 function App() {
 
   return (
     <Router>
- 
-        <Routes>
 
-
-          //primal
-        {/*<Route path="/" element={<PPage />} />
-        <Route path="/add-patient" element={<AddPatient />} />
-        <Route path="/patient-list" element={<PatientList />} />
-        <Route path="/patient-edit/:id" element={<PatientUpdate />} />
-        <Route path="/ai-prediction" element={<AIPrediction />} />
-        <Route path="/patient-report" element={<PatientReport />} />*/}
-          
 
           //sanduni
-
+          <Route path = "/parmacyhome" element = {<PharmacyDashboard/>}></Route>
+          <Route path = "/inventory" element = {<InventoryForm/>}></Route>
+          <Route path = "/inventoryDetails" element = {<InventryDetails/>}></Route>
+          <Route path = "/billing" element = {<BillForm/>}></Route>
+          <Route path = "/billingDetails" element = {<BillDetails/>}></Route>
 
           //jithma
 
