@@ -8,7 +8,7 @@ import inventory5 from "../../assets/inventory_images/inventory5.jpg";
 const BillingForm = () => {
     const navigate = useNavigate();
     const [customerName, setCustomerName] = useState('');
-    const [medicines, setMedicines] = useState([{ medName: '', quantity: '', price: '' }]);
+    const [medicines, setMedicines] = useState([{ id: Date.now(), medName: '', quantity: '', price: '' }]);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [date, setDate] = useState('');
     const [error, setError] = useState(null);
@@ -77,7 +77,7 @@ const BillingForm = () => {
     };
 
     const handleAddMedicine = () => {
-        setMedicines([...medicines, { medName: '', quantity: '', price: '' }]);
+        setMedicines([...medicines, { id: Date.now(), medName: '', quantity: '', price: '' }]);
     };
 
     const handleRemoveMedicine = (index) => {
@@ -138,7 +138,7 @@ const BillingForm = () => {
 
     const resetForm = () => {
         setCustomerName('');
-        setMedicines([{ medName: '', quantity: '', price: '' }]);
+        setMedicines([{ id: Date.now(), medName: '', quantity: '', price: '' }]);
         setPaymentMethod('');
         const currentDate = new Date().toISOString().split('T')[0];
         setDate(currentDate);
@@ -164,13 +164,14 @@ const BillingForm = () => {
                         Create New Billing Entry
                     </h1>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form id="billing-form" onSubmit={handleSubmit} className="space-y-6">
                         {/* Customer Name */}
                         <div>
-                            <label className="block text-sm font-semibold text-blue-700 mb-2">
+                            <label htmlFor="customer-name" className="block text-sm font-semibold text-blue-700 mb-2">
                                 Customer Name
                             </label>
                             <input
+                                id="customer-name"
                                 type="text"
                                 value={customerName}
                                 onChange={(e) => setCustomerName(e.target.value)}
@@ -184,10 +185,11 @@ const BillingForm = () => {
                         <div className="space-y-4">
                             <h2 className="text-xl font-semibold text-blue-700">Medicines</h2>
                             {medicines.map((medicine, index) => (
-                                <div key={index} className="relative">
+                                <div key={medicine.id} className="relative">
                                     <div className="flex space-x-3 items-center">
                                         <div className="w-1/3 relative">
                                             <input
+                                                id={`medicine-name-${medicine.id}`}
                                                 type="text"
                                                 value={medicine.medName}
                                                 onChange={(e) => handleMedicineNameChange(index, e.target.value)}
@@ -211,6 +213,7 @@ const BillingForm = () => {
                                             )}
                                         </div>
                                         <input
+                                            id={`medicine-quantity-${medicine.id}`}
                                             type="number"
                                             value={medicine.quantity}
                                             onChange={(e) => handleMedicineChange(index, 'quantity', e.target.value)}
@@ -220,6 +223,7 @@ const BillingForm = () => {
                                             className="w-1/3 px-3 py-2 border rounded-lg"
                                         />
                                         <input
+                                            id={`medicine-price-${medicine.id}`}
                                             type="number"
                                             value={medicine.price}
                                             onChange={(e) => handleMedicineChange(index, 'price', e.target.value)}
@@ -231,6 +235,7 @@ const BillingForm = () => {
                                         />
                                         {index > 0 && (
                                             <button
+                                                id={`remove-medicine-${medicine.id}`}
                                                 type="button"
                                                 onClick={() => handleRemoveMedicine(index)}
                                                 className="text-red-500 hover:text-red-700"
@@ -243,6 +248,7 @@ const BillingForm = () => {
                             ))}
 
                             <button
+                                id="add-medicine-button"
                                 type="button"
                                 onClick={handleAddMedicine}
                                 className="w-full flex items-center justify-center bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-300"
@@ -252,17 +258,18 @@ const BillingForm = () => {
                         </div>
 
                         {/* Total Amount Display */}
-                        <div className="bg-blue-50 p-4 rounded-lg">
+                        <div id="total-amount-display" className="bg-blue-50 p-4 rounded-lg">
                             <span className="font-semibold text-blue-800">Total Amount: </span>
                             <span className="text-xl font-bold text-green-600">LKR{calculateTotal()}</span>
                         </div>
 
                         {/* Payment Method */}
                         <div>
-                            <label className="block text-sm font-semibold text-blue-700 mb-2">
+                            <label htmlFor="payment-method" className="block text-sm font-semibold text-blue-700 mb-2">
                                 Payment Method
                             </label>
                             <select
+                                id="payment-method"
                                 value={paymentMethod}
                                 onChange={(e) => setPaymentMethod(e.target.value)}
                                 required
@@ -277,10 +284,11 @@ const BillingForm = () => {
 
                         {/* Date */}
                         <div>
-                            <label className="block text-sm font-semibold text-blue-700 mb-2">
+                            <label htmlFor="billing-date" className="block text-sm font-semibold text-blue-700 mb-2">
                                 Date
                             </label>
                             <input
+                                id="billing-date"
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
@@ -292,6 +300,7 @@ const BillingForm = () => {
                         {/* Action Buttons */}
                         <div className="flex space-x-4 pt-4">
                             <button
+                                id="reset-form-button"
                                 type="button"
                                 onClick={resetForm}
                                 className="w-1/2 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition duration-300 flex items-center justify-center"
@@ -299,6 +308,7 @@ const BillingForm = () => {
                                 <Trash2 className="mr-2" /> Reset
                             </button>
                             <button
+                                id="save-billing-button"
                                 type="submit"
                                 className="w-1/2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center justify-center"
                             >
@@ -308,7 +318,7 @@ const BillingForm = () => {
 
                         {/* Error Message */}
                         {error && (
-                            <div className="text-red-500 text-sm mt-2 text-center bg-red-50 p-2 rounded-lg">
+                            <div id="error-message" className="text-red-500 text-sm mt-2 text-center bg-red-50 p-2 rounded-lg">
                                 {error}
                             </div>
                         )}

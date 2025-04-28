@@ -108,10 +108,6 @@ const AllBills = () => {
   };
 
   const handleUpdate = async () => {
-
-
-
-    
     try {
       await axios.put(`http://localhost:5000/billing/upbi/${editBilling}`, formData);
       setBillings(billings.map((b) => (b._id === editBilling ? { ...b, ...formData } : b)));
@@ -151,7 +147,7 @@ const AllBills = () => {
 
     return (
       
-      <div className="print-receipt hidden print:block p-6 bg-white">
+      <div id="print-receipt" className="print-receipt hidden print:block p-6 bg-white">
         <div className="border-2 border-black p-6">
           <h1 className="text-3xl font-bold text-center mb-4">Pharmacy Receipt</h1>
           
@@ -166,7 +162,7 @@ const AllBills = () => {
             </div>
           </div>
 
-          <table className="w-full border-collapse mb-4">
+          <table id="receipt-table" className="w-full border-collapse mb-4">
             <thead>
               <tr className="bg-gray-100">
                 <th className="border p-2 text-left">Medicine Name</th>
@@ -177,7 +173,7 @@ const AllBills = () => {
             </thead>
             <tbody>
               {receiptToPrint.medicines.map((med, index) => (
-                <tr key={index}>
+                <tr key={index} id={`receipt-item-${index}`}>
                   <td className="border p-2">{med.medName}</td>
                   <td className="border p-2 text-right">{med.price.toFixed(2)}</td>
                   <td className="border p-2 text-right">{med.quantity}</td>
@@ -188,7 +184,7 @@ const AllBills = () => {
           </table>
 
           <div className="text-right">
-            <p className="text-xl font-bold">Total Amount: LKR {receiptToPrint.totalAmount.toFixed(2)}</p>
+            <p id="receipt-total" className="text-xl font-bold">Total Amount: LKR {receiptToPrint.totalAmount.toFixed(2)}</p>
           </div>
 
           <div className="text-center mt-4 text-sm">
@@ -201,21 +197,21 @@ const AllBills = () => {
   };
 
   return (
-    <div className="relative">
+    <div id="all-bills-container" className="relative">
     <div className="bg-gradient-to-br from-red-200 via-black-700 to-blue-200 p-6" >
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+      <h2 id="page-title" className="text-3xl font-bold mb-6 text-center text-gray-800">
         Billing Management
       </h2>
       
       
       {loading ? (
-        <div className="flex justify-center items-center h-64">
+        <div id="loading-spinner" className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-500"></div>
         </div>
       ) : (
-        <div className="overflow-x-auto shadow-md rounded-lg">
-          <table className="w-full bg-white">
+        <div id="bills-table-container" className="overflow-x-auto shadow-md rounded-lg">
+          <table id="bills-table" className="w-full bg-white">
             <thead className="bg-blue-600 text-white">
               <tr>
                 <th className="py-3 px-4 text-left">Customer</th>
@@ -227,7 +223,7 @@ const AllBills = () => {
             </thead>
             <tbody>
               {billings.map((billing) => (
-                <tr key={billing._id} className="border-b hover:bg-gray-100 transition-colors">
+                <tr id={`bill-row-${billing._id}`} key={billing._id} className="border-b hover:bg-gray-100 transition-colors">
                   <td className="py-3 px-4">{billing.customerName}</td>
                   <td className="py-3 px-4 font-semibold text-green-600">
                     LKR {billing.totalAmount.toFixed(2)}
@@ -238,18 +234,21 @@ const AllBills = () => {
                   </td>
                   <td className="py-3 px-4 space-x-2">
                     <button
+                      id={`edit-bill-${billing._id}`}
                       onClick={() => handleEdit(billing)}
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
                     >
                       Update
                     </button>
                     <button
+                      id={`delete-bill-${billing._id}`}
                       onClick={() => deleteBilling(billing._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
                     >
                       Delete
                     </button>
                     <button
+                      id={`print-bill-${billing._id}`}
                       onClick={() => handlePrintReceipt(billing)}
                       className="bg-green-500 text-white px-5 py-1 rounded hover:bg-green-600 transition-colors "
                     >
@@ -265,11 +264,12 @@ const AllBills = () => {
 
       {/* Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-whie bg-opacity-30 backdrop-blur-sm p-4">
+        <div id="edit-modal" className="fixed inset-0 z-50 flex items-center justify-center bg-whie bg-opacity-30 backdrop-blur-sm p-4">
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="bg-blue-600 text-white p-6 rounded-t-xl flex justify-between items-center">
-              <h3 className="text-2xl font-bold">Edit Billing Details</h3>
+              <h3 id="modal-title" className="text-2xl font-bold">Edit Billing Details</h3>
               <button 
+                id="close-modal-button"
                 onClick={() => setIsModalOpen(false)}
                 className="hover:bg-blue-700 p-2 rounded-full transition-colors"
               >
@@ -277,13 +277,14 @@ const AllBills = () => {
               </button>
             </div>
             
-            <div className="p-6 space-y-4">
+            <div id="modal-content" className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="customer-name" className="block text-sm font-medium text-gray-700 mb-2">
                     Customer Name
                   </label>
                   <input
+                    id="customer-name"
                     type="text"
                     value={formData.customerName}
                     onChange={(e) =>
@@ -294,10 +295,11 @@ const AllBills = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="payment-method" className="block text-sm font-medium text-gray-700 mb-2">
                     Payment Method
                   </label>
                   <input
+                    id="payment-method"
                     type="text"
                     value={formData.paymentMethod}
                     onChange={(e) =>
@@ -309,10 +311,11 @@ const AllBills = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-100 p-4 rounded-lg">
+              <div id="medicines-section" className="bg-gray-100 p-4 rounded-lg">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-semibold text-gray-800">Medicines</h4>
                   <button
+                    id="add-medicine-button"
                     onClick={handleAddMedicine}
                     className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center"
                   >
@@ -322,13 +325,15 @@ const AllBills = () => {
 
                 {formData.medicines.map((med, index) => (
                   <div 
+                    id={`medicine-item-${index}`}
                     key={index} 
                     className="bg-white p-4 rounded-lg mb-3 shadow-sm border border-gray-200"
                   >
                     <div className="grid grid-cols-3 gap-3">
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">Medicine Name</label>
+                        <label htmlFor={`med-name-${index}`} className="block text-xs text-gray-600 mb-1">Medicine Name</label>
                         <input
+                          id={`med-name-${index}`}
                           type="text"
                           value={med.medName}
                           onChange={(e) =>
@@ -339,8 +344,9 @@ const AllBills = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">Price</label>
+                        <label htmlFor={`med-price-${index}`} className="block text-xs text-gray-600 mb-1">Price</label>
                         <input
+                          id={`med-price-${index}`}
                           type="number"
                           value={med.price}
                           onChange={(e) =>
@@ -351,9 +357,10 @@ const AllBills = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">Quantity</label>
+                        <label htmlFor={`med-quantity-${index}`} className="block text-xs text-gray-600 mb-1">Quantity</label>
                         <div className="flex items-center">
                           <input
+                            id={`med-quantity-${index}`}
                             type="number"
                             value={med.quantity}
                             onChange={(e) =>
@@ -363,6 +370,7 @@ const AllBills = () => {
                             placeholder="Quantity"
                           />
                           <button
+                            id={`remove-med-${index}`}
                             onClick={() => handleRemoveMedicine(index)}
                             className="ml-2 text-red-500 hover:bg-red-50 p-2 rounded-full"
                           >
@@ -375,16 +383,16 @@ const AllBills = () => {
                 ))}
               </div>
 
-              <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
+              <div id="total-display" className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
                 <div>
                   <p className="text-sm text-gray-600">Previous Total</p>
-                  <p className="text-xl font-bold text-red-600">
+                  <p id="previous-total" className="text-xl font-bold text-red-600">
                     LKR {previousTotal.toFixed(2)}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Updated Total</p>
-                  <p className="text-xl font-bold text-green-600">
+                  <p id="updated-total" className="text-xl font-bold text-green-600">
                     LKR {formData.totalAmount?.toFixed(2)}
                   </p>
                 </div>
@@ -392,12 +400,14 @@ const AllBills = () => {
 
               <div className="flex justify-end space-x-3">
                 <button
+                  id="cancel-button"
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 flex items-center"
                 >
                   <X size={16} className="mr-1" /> Cancel
                 </button>
                 <button
+                  id="save-changes-button"
                   onClick={handleUpdate}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
                 >
@@ -412,6 +422,7 @@ const AllBills = () => {
       {/* Back to Home Button */}
       <div className="flex justify-center mt-6">
         <button
+          id="back-to-home-button"
           onClick={() => navigate("/parmacyhome")}
           className="bg-purple-700 text-white px-6 py-2 rounded-md hover:bg-green-600 transition duration-300 flex items-center"
         >
@@ -442,8 +453,6 @@ const AllBills = () => {
     </div>
     </div>
     </div>
-
-
   );
 };
 
