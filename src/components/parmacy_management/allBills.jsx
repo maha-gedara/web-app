@@ -42,15 +42,33 @@ const AllBills = () => {
 
   const deleteBilling = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/billing/deletebi/${id}`);
-      setBillings(billings.filter((billing) => billing._id !== id));
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Bill Deleted',
-        showConfirmButton: false,
-        timer: 1500
+      // Show confirmation BEFORE deleting
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to delete this receipt? ',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No'
       });
+  
+      if (result.isConfirmed) {
+        await axios.delete(`http://localhost:5000/billing/deletebi/${id}`);
+        
+        // Update UI
+        setBillings(billings.filter((billing) => billing._id !== id));
+  
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Bill Deleted',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }
+  
     } catch (error) {
       console.error("Error deleting billing:", error);
       Swal.fire({
@@ -60,6 +78,7 @@ const AllBills = () => {
       });
     }
   };
+  
 
   const handleEdit = (billing) => {
     setEditBilling(billing._id);

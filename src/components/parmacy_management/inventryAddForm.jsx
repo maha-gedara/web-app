@@ -223,7 +223,9 @@ const InventoryForm = () => {
                             Quantity
                         </label>
                         <input
+                            
                             type="number"
+                            id = "quantity"
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                             required
@@ -240,6 +242,7 @@ const InventoryForm = () => {
                         </label>
                         <input
                             type="date"
+                            id = "eDate"
                             value={expiryDate}
                             onChange={(e) => setExpiryDate(e.target.value)}
                             required

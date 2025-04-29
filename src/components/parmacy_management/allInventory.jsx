@@ -41,7 +41,7 @@ export default function AllInventory() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/inventory/in")
+      .get(`http://localhost:5000/inventory/in`)
       .then((response) => {
         const inventoryData = response.data;
         setInventory(inventoryData);
@@ -60,6 +60,16 @@ export default function AllInventory() {
 
   const handleDelete = (id) => {
     axios.delete(`http://localhost:5000/inventory/deletein/${id}`)
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this medicine?  ',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No',
+  })
       .then(() => {
         const updatedInventory = inventory.filter(item => item._id !== id);
         setInventory(updatedInventory);
