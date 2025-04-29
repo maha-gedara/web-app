@@ -94,7 +94,7 @@ const PatientList = () => {
   };
 
   const handleBackToHome = () => {
-    navigate('/');
+    navigate('/pp');
   };
 
   // Format date
