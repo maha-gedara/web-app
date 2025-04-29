@@ -200,7 +200,7 @@ const PatientReport = () => {
   };
 
   const handleHomeClick = () => {
-    navigate('/');
+    navigate('/pp');
   };
 
   return (

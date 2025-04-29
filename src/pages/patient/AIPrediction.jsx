@@ -93,7 +93,7 @@ const AIPrediction = () => {
   };
 
   const handleBackToHome = () => {
-    navigate('/');
+    navigate('/pp');
   };
 
   return (

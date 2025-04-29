@@ -158,7 +158,7 @@ const AddPatient = () => {
   };
 
   const handleBack = () => {
-    navigate('/');
+    navigate('/pp');
   };
 
   // Memoized form validation
