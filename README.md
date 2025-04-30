@@ -1,3 +1,50 @@
+
+---
+
+### ✅ ** Frontend - React Vite + Tailwind CSS**  
+`mediz-frontend/README.md`
+
+```markdown
+# MEDIZ - Frontend
+
+**MEDIZ** is a hospital administration web platform with an intuitive and responsive frontend built using **React (Vite)** and **Tailwind CSS**. This repository provides the user interface for managing hospital operations such as patient records, doctor schedules, pharmacy inventory, and AI-based illness prediction.
+
+## 🌟 Key Features
+
+- 🔍 Patient Listing, Filtering & Search
+- ➕ Add / Update / Delete Patient Info
+- 🧠 AI Symptom-based Illness Prediction
+- 📥 Downloadable Patient Reports
+- 📦 Real-time Stock Status (Pharmacy)
+- 🔔 Alert & Notification UI (React-Toastify)
+- 🎨 Tailwind CSS-based modern design
+
+## 🧰 Tech Stack
+
+- **React (Vite)**
+- **Tailwind CSS**
+- **Axios** for HTTP requests
+- **React Router DOM**
+- **React Toastify** for alerts
+- **Heroicons** or Lucide for icons
+
+## 🛠️ Setup Instructions
+
+1. Clone the repo:
+
+   ```bash
+   git clone https://github.com/your-org/mediz-frontend.git
+   cd mediz-frontend
+
+   ```bash
+   npm install
+
+
+
+
+
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
