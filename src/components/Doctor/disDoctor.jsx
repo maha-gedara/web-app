@@ -33,6 +33,8 @@ const DoctorDisForm = () => {
   const [editDoctor, setEditDoctor] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
 
   // Update date/time every minute
   useEffect(() => {
@@ -62,6 +64,7 @@ const DoctorDisForm = () => {
       .get("http://localhost:5000/doctor")
       .then((response) => {
         setDoctors(response.data);
+        setFilteredDoctors(response.data); // Initialize filtered doctors with all doctors
       })
       .catch((error) => {
         toast.error("Error fetching doctor data!");
@@ -69,7 +72,44 @@ const DoctorDisForm = () => {
       });
   }, []);
 
-  
+  // Updated search function that handles both name and specialty
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredDoctors(doctors);
+      return;
+    }
+    
+    const lowerCaseSearch = searchTerm.toLowerCase();
+    const filtered = doctors.filter(doctor => {
+      // Check doctor's name
+      const nameMatch = doctor.fName && doctor.fName.toLowerCase().includes(lowerCaseSearch);
+      
+      // Check doctor's specialty
+      let specialtyMatch = false;
+      if (doctor.special) {
+        // Handle both string and array types for special field
+        if (typeof doctor.special === 'string') {
+          specialtyMatch = doctor.special.toLowerCase().includes(lowerCaseSearch);
+        } else if (Array.isArray(doctor.special)) {
+          specialtyMatch = doctor.special.some(spec => 
+            spec.toLowerCase().includes(lowerCaseSearch)
+          );
+        }
+      }
+      
+      // Return true if either name or specialty matches
+      return nameMatch || specialtyMatch;
+    });
+    
+    setFilteredDoctors(filtered);
+  }, [searchTerm, doctors]);
+
+  // Handle search input changes
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  //Delete Doctor
   const handleDeleteDoctor = async (id, doctorName) => {
     Swal.fire({
       title: "Are you sure?",
@@ -338,6 +378,30 @@ const DoctorDisForm = () => {
     doc.save('Doctors_Directory_Report.pdf');
   };
 
+  const searchContainerStyle = {
+    position: "relative",
+    width: "100%",
+    maxWidth: "300px",
+    marginBottom: "1rem"
+  };
+  
+  const searchInputStyle = {
+    ...inputStyle,
+    paddingLeft: "2.5rem",
+    backgroundColor: colors.white,
+    width: "100%",
+    border: `1px solid ${colors.silver}`,
+    height: "2.5rem"
+  };
+  
+  const searchIconStyle = {
+    position: "absolute",
+    left: "0.75rem",
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: colors.silver
+  };
+  
   return (
     <div style={{
       backgroundColor: colors.lightGray,
@@ -381,6 +445,22 @@ const DoctorDisForm = () => {
             
             <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: colors.navy, margin: 0 }}>Doctors Directory
             </h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexGrow: 1,marginTop:"20px",marginLeft:"30px" }}>
+              <div style={searchContainerStyle}>
+                <div style={searchIconStyle}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search doctors by name or specialty..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  style={searchInputStyle}
+                />
+              </div>
+            </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <Link to="/doctors">
                 <button style={buttonStyle(colors.navy)}>
@@ -413,8 +493,9 @@ const DoctorDisForm = () => {
               </tr>
             </thead>
 
+            {/* Replace the entire tbody section with this code */}
             <tbody>
-              {doctors.map((doctor) => (
+              {filteredDoctors.map((doctor) => (
                 <React.Fragment key={doctor._id}>
                   <tr style={{
                     ...tableRowStyle,
@@ -603,7 +684,7 @@ const DoctorDisForm = () => {
                           </button>
                         )}
                         <button
-                          onClick={() => handleDeleteDoctor(doctor._id)}
+                          onClick={() => handleDeleteDoctor(doctor._id, doctor.fName)}
                           style={actionButtonStyle(colors.red, `${colors.red}15`)} // Using palette red
                           title="Delete" >
                           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
