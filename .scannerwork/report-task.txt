@@ -1,0 +1,6 @@
+projectKey=mediz-web-app
+serverUrl=http://localhost:9000
+serverVersion=25.4.0.105899
+dashboardUrl=http://localhost:9000/dashboard?id=mediz-web-app
+ceTaskId=293b1d5c-cbc7-41c0-9c50-ee696b4625cd
+ceTaskUrl=http://localhost:9000/api/ce/task?id=293b1d5c-cbc7-41c0-9c50-ee696b4625cd

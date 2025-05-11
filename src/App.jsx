@@ -24,14 +24,14 @@ function App() {
 
   return (
     <Router>
-
+      <Routes>
 
           //sanduni
-          <Route path = "/parmacyhome" element = {<PharmacyDashboard/>}></Route>
-          <Route path = "/inventory" element = {<InventoryForm/>}></Route>
+          {/* <Route path = "/parmacyhome" element = {<PharmacyDashboard/>}></Route> */}
+          {/* <Route path = "/inventory" element = {<InventoryForm/>}></Route>
           <Route path = "/inventoryDetails" element = {<InventryDetails/>}></Route>
           <Route path = "/billing" element = {<BillForm/>}></Route>
-          <Route path = "/billingDetails" element = {<BillDetails/>}></Route>
+          <Route path = "/billingDetails" element = {<BillDetails/>}></Route> */}
 
           //jithma
 
