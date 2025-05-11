@@ -303,80 +303,234 @@ const DoctorDisForm = () => {
     marginBottom: "0.5rem"
   };
 
-  const downloadPDF = () => {
-    const doc = new jsPDF('portrait');
-  
-    // Define the title and styles
-    const title = "Doctors Directory Report";
-    const titleFontSize = 20;
-    const lineHeight = 12;
-    const leftMargin = 5;
-    const topMargin = 20;
-    let currentY = topMargin;
-  
-    // Add the title to the right side of the page
-    doc.setFontSize(titleFontSize);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor("black");
-    const titleWidth = doc.getStringUnitWidth(title) * titleFontSize;
-    const titleX = doc.internal.pageSize.getWidth() - titleWidth + 40;  // 10 for padding from the right edge
-    doc.text(title, titleX, currentY);
-    currentY += lineHeight * 2;
-  
-    // Table Header
-    const headers = ["Doctor Name", "Specialty", "Contact", "Email Address", "Availability"];
-    const tableColumnWidth = [30, 30, 30, 50, 50];
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "bold");
-  
-    // Draw Table Header with Borders
-    let startX = leftMargin;
-    headers.forEach((header, index) => {
-      doc.rect(startX, currentY, tableColumnWidth[index], lineHeight);
-      doc.text(header, startX + 5, currentY + 8);
-      startX += tableColumnWidth[index];
-    });
-  
-    currentY += lineHeight;
-  
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-  
-    // Draw Table Data for each doctor
-    doctors.forEach((doctor, doctorIndex) => {
-      const availabilityText = doctor.availability.map(avail =>
-        `${avail.day}: ${avail.timeSlots.map(slot => `${slot.startTime} - ${slot.endTime}`).join(', ')}`
-      ).join("\n") || "N/A";
-  
-      const availabilityLines = doc.splitTextToSize(availabilityText, tableColumnWidth[4] - 10);
-      const rowHeight = Math.max(lineHeight, lineHeight * availabilityLines.length);
-  
-      startX = leftMargin;
-      const doctorData = [
-        doctor.fName || "N/A",
-        Array.isArray(doctor.special) ? doctor.special.join(', ') : "N/A",
-        doctor.cNumber || "N/A",
-        doctor.email || "N/A",
-        availabilityText
-      ];
-  
-      doctorData.forEach((data, index) => {
-        doc.rect(startX, currentY, tableColumnWidth[index], rowHeight);
-        const textLines = doc.splitTextToSize(data, tableColumnWidth[index] - 10);
-        const textStartY = currentY + (rowHeight - (textLines.length * lineHeight * 0.6)) / 2 + lineHeight * 0.5;
-        doc.text(textLines, startX + 5, textStartY);
-        startX += tableColumnWidth[index];
-      });
-  
-      currentY += rowHeight;
-  
-      if (currentY > doc.internal.pageSize.getHeight() - 20) {
-        doc.addPage();
-        currentY = topMargin;
-      }
-    });
-    doc.save('Doctors_Directory_Report.pdf');
+const downloadPDF = () => {
+  const doc = new jsPDF('landscape');
+
+  // Updated navy blue palette
+  const colors = {
+    primary: "#1a365d",      // Deep navy for headers
+    secondary: "#2c5282",    // Accent blue
+    accent: "#63b3ed",       // Light accent blue
+    lightBg: "#f0f4f8",      // Soft light background
+    borderGray: "#cbd5e0",   // Light gray border
+    textDark: "#1a202c",     // Dark text
+    textMuted: "#718096"     // Muted text
   };
+
+  const margin = { left: 20, right: 20, top: 20, bottom: 25 };
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const contentWidth = pageWidth - margin.left - margin.right;
+  let currentY = margin.top;
+
+  // Header box
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(margin.left, currentY, contentWidth, 30, 4, 4, 'F');
+  doc.setDrawColor(colors.borderGray);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(margin.left, currentY, contentWidth, 30, 4, 4, 'S');
+
+  // Logo
+  doc.setFillColor(colors.secondary);
+  doc.roundedRect(margin.left + 5, currentY + 5, 20, 20, 2, 2, 'F');
+  doc.setFillColor(255, 255, 255);
+  doc.rect(margin.left + 12, currentY + 8, 6, 14, 'F');
+  doc.rect(margin.left + 8, currentY + 12, 14, 6, 'F');
+
+  // Header text
+  doc.setFontSize(20);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(colors.primary);
+  doc.text("Mediz Directory", margin.left + 35, currentY + 15);
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(colors.textMuted);
+  doc.text(`Complete listing of ${doctors.length} registered medical professionals`, margin.left + 35, currentY + 22);
+
+  doc.setFontSize(9);
+  doc.text(dateStr, pageWidth - margin.right - 5, currentY + 15, { align: "right" });
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(colors.primary);
+  doc.text("MEDICAL CENTER", pageWidth - margin.right - 5, currentY + 22, { align: "right" });
+
+  currentY += 40;
+
+  // Filter info
+  doc.setFillColor(colors.lightBg);
+  doc.setDrawColor(colors.borderGray);
+  doc.roundedRect(margin.left, currentY, contentWidth, 15, 3, 3, 'FD');
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(colors.textMuted);
+  doc.text("Doctors' Details", margin.left + 10, currentY + 10);
+  doc.setFont("helvetica", "normal");
+  const timeStr = today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  doc.text(`Generated: ${timeStr}`, pageWidth - margin.right - 5, currentY + 10, { align: "right" });
+
+  currentY += 25;
+
+  // Column setup (increased width for email column)
+  const columns = [
+    { header: "PHYSICIAN NAME", width: 0.20, key: "name" },
+    { header: "SPECIALIZATION", width: 0.15, key: "specialty" },
+    { header: "CONTACT", width: 0.15, key: "contact" },
+    { header: "EMAIL", width: 0.25, key: "email" },  // Increased width for email column
+    { header: "AVAILABILITY", width: 0.25, key: "availability" }
+  ];
+
+  const columnWidths = columns.map(col => contentWidth * col.width);
+
+  // Table header
+  let startX = margin.left;
+  columns.forEach((col, index) => {
+    doc.setFillColor(colors.primary);
+    doc.rect(startX, currentY, columnWidths[index], 14, 'F');
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+    doc.text(col.header, startX + 5, currentY + 9);
+    startX += columnWidths[index];
+  });
+  currentY += 14;
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+
+  // Table rows
+  doctors.forEach((doctor, index) => {
+    const availabilityText = doctor.availability.map(avail =>
+      `${avail.day}: ${avail.timeSlots.map(slot => `${slot.startTime} - ${slot.endTime}`).join(', ')}`
+    ).join("\n") || "Not available";
+
+    const availabilityLines = doc.splitTextToSize(availabilityText, columnWidths[4] - 10);
+    const rowHeight = Math.max(15, availabilityLines.length * 6);
+
+    // Alternate background
+    doc.setFillColor(index % 2 === 0 ? colors.lightBg : 255);
+    doc.rect(margin.left, currentY, contentWidth, rowHeight, 'F');
+
+    // Row data
+    const rowData = [
+      doctor.fName || "—",
+      Array.isArray(doctor.special) ? doctor.special.join(', ') : (doctor.special || "—"),
+      doctor.cNumber || "—",
+      doctor.email || "—",
+      availabilityText
+    ];
+
+    startX = margin.left;
+    rowData.forEach((data, colIndex) => {
+      if (colIndex > 0) {
+        doc.setDrawColor(colors.borderGray);
+        doc.setLineWidth(0.1);
+        doc.line(startX, currentY, startX, currentY + rowHeight);
+      }
+
+      const textLines = doc.splitTextToSize(data, columnWidths[colIndex] - 10);
+      const textHeight = textLines.length * 5;
+      const textY = currentY + (rowHeight - textHeight) / 2 + 5;
+
+      if (colIndex === 0) {
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(colors.textDark);
+      } else if (colIndex === 1) {
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(colors.primary);
+      } else if (colIndex === 3) {
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(colors.textMuted);
+      } else {
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(colors.textDark);
+      }
+
+      doc.text(textLines, startX + 5, textY);
+      startX += columnWidths[colIndex];
+    });
+
+    // Bottom border
+    doc.setDrawColor(colors.borderGray);
+    doc.setLineWidth(0.1);
+    doc.line(margin.left, currentY + rowHeight, margin.left + contentWidth, currentY + rowHeight);
+
+    currentY += rowHeight;
+
+    if (currentY > pageHeight - margin.bottom - 25) {
+      doc.addPage();
+      currentY = margin.top;
+
+      // Simple page continuation header
+      doc.setFillColor(colors.primary);
+      doc.rect(margin.left, currentY, contentWidth, 12, 'F');
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(255, 255, 255);
+      doc.text("Healthcare Providers Directory (Continued)", margin.left + 10, currentY + 8);
+      doc.setFontSize(9);
+      doc.text(`Generated: ${dateStr}`, pageWidth - margin.right - 10, currentY + 8, { align: "right" });
+
+      currentY += 20;
+
+      // Repeat table header
+      startX = margin.left;
+      columns.forEach((col, index) => {
+        doc.setFillColor(colors.primary);
+        doc.rect(startX, currentY, columnWidths[index], 14, 'F');
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(255, 255, 255);
+        doc.text(col.header, startX + 5, currentY + 9);
+        startX += columnWidths[index];
+      });
+
+      currentY += 14;
+    }
+  });
+
+  // Footer for each page
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFillColor(colors.lightBg);
+    doc.rect(margin.left, pageHeight - margin.bottom, contentWidth, 15, 'F');
+
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(colors.textMuted);
+    doc.text(
+      "CONFIDENTIAL: This document contains protected health information. Unauthorized distribution prohibited.",
+      margin.left + 5,
+      pageHeight - margin.bottom + 10
+    );
+
+    doc.setFillColor(colors.primary);
+    doc.roundedRect(pageWidth - margin.right - 40, pageHeight - margin.bottom + 2.5, 35, 10, 5, 5, 'F');
+
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+    doc.text(
+      `PAGE ${i} OF ${totalPages}`,
+      pageWidth - margin.right - 22.5,
+      pageHeight - margin.bottom + 9,
+      { align: "center" }
+    );
+  }
+
+  const dateForFilename = today.toISOString().split('T')[0];
+  doc.save(`Medical_Staff_Directory_${dateForFilename}.pdf`);
+};
+
+
+
+
+
 
   const searchContainerStyle = {
     position: "relative",
