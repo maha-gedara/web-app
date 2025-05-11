@@ -135,7 +135,6 @@ export default function Login() {
           <div className="flex justify-center mb-8">
             <div className="text-center">
               <img src={MedizLogo} alt="MEDIZ Logo" className="h-16 w-28 mx-auto mb-2" />
-              <h1 className="text-xl font-bold text-blue-900">MEDIZ</h1>
               <p className="text-gray-600">Hospital Management System</p>
             </div>
           </div>
